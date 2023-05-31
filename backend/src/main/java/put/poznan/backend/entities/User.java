@@ -1,8 +1,6 @@
 package put.poznan.backend.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,8 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-//@Entity
-//@Table(name = "user")
+@Entity
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,9 +26,9 @@ public class User implements UserDetails {
     public Collection< ? extends GrantedAuthority > getAuthorities() {
         return null;
     }
-    
+
     @Override
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
