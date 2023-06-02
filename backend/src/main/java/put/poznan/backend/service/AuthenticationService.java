@@ -1,13 +1,11 @@
 package put.poznan.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import put.poznan.backend.config.JwtAuthenticationManager;
-import put.poznan.backend.config.JwtService;
+import put.poznan.backend.config.jwt.JwtAuthenticationManager;
 import put.poznan.backend.dto.authentication.AuthenticationResponse;
 import put.poznan.backend.dto.authentication.request.AuthenticationRequest;
 import put.poznan.backend.entities.User;

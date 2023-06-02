@@ -1,4 +1,4 @@
-package put.poznan.backend.config;
+package put.poznan.backend.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

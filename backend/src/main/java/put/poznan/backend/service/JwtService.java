@@ -1,4 +1,4 @@
-package put.poznan.backend.config;
+package put.poznan.backend.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

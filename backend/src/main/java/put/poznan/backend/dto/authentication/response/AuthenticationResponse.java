@@ -1,4 +1,4 @@
-package put.poznan.backend.dto.authentication;
+package put.poznan.backend.dto.authentication.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
