@@ -1,11 +1,17 @@
 package put.poznan.backend.dto.transaction.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import put.poznan.backend.entities.Transaction;
 
 import java.util.UUID;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateTransactionResponse {
     private UUID id;
     private UUID sender;

@@ -1,6 +1,7 @@
 package put.poznan.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import put.poznan.backend.entities.Block;
@@ -15,17 +16,17 @@ import java.util.Optional;
 public class BlockchainService {
 
     private final BlockchainRepository blockchainRepository;
+    @Value("${blockchain.difficulty}")
+    private int difficulty;
 
-    //TODO finish it
     public Block addBlock( Block block ) throws NoSuchAlgorithmException {
         Optional< Block > prevBlock = blockchainRepository.getLastBlock();
-        if ( prevBlock.isPresent() ) {
-            if ( ! block.isValid( prevBlock.get() ) ) throw new BlockInvalid( "Block is invalid" );
-
-        } else {
-
-        }
-
+        //For every non-first block
+        if ( prevBlock.isPresent() && ! block.isValid( prevBlock.get(), difficulty ) )
+            throw new BlockInvalid( "Block is invalid" );
+        //For first block
+        if ( prevBlock.isEmpty() && ! block.isValid( difficulty ) )
+            throw new BlockInvalid( "Block is invalid" );
         return blockchainRepository.save( block );
     }
 

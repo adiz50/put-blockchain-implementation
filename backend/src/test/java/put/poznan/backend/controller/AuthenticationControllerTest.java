@@ -15,8 +15,7 @@ import put.poznan.backend.dto.authentication.request.AuthenticationRequest;
 import put.poznan.backend.dto.authentication.response.AuthenticationResponse;
 import put.poznan.backend.repository.UserRepository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = TestContainersInitializer.class)
@@ -49,6 +48,22 @@ public class AuthenticationControllerTest {
         //Then
         assertEquals( HttpStatus.OK, resp.getStatusCode() );
         assertTrue( userRepository.findByUsername( "test" ).isPresent() );
+    }
+
+    @Test
+    public void register_usernameTaken() {
+        //Given
+        AuthenticationRequest req = AuthenticationRequest.builder()
+                .username( "test" )
+                .password( "test" )
+                .build();
+        //When
+        restTemplate.exchange( "/api/auth/register",
+                HttpMethod.POST, new HttpEntity<>( req, null ), AuthenticationResponse.class );
+        ResponseEntity< String > resp = restTemplate.exchange( "/api/auth/register",
+                HttpMethod.POST, new HttpEntity<>( req, null ), String.class );
+        //Then
+        assertNotEquals( HttpStatus.OK, resp.getStatusCode() );
     }
 
     @Test
