@@ -1,10 +1,10 @@
 package put.poznan.backend.entities;
 
+import com.github.dockerjava.zerodep.shaded.org.apache.commons.codec.binary.Hex;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
-import put.poznan.backend.dto.blockchain.TransactionData;
 import put.poznan.backend.exception.BlockInvalid;
 
 import java.nio.charset.StandardCharsets;
@@ -42,9 +42,8 @@ public class Block {
     private int difficulty;
 
     @Builder
-    public Block( Long index, LocalDateTime timestamp, List< Transaction > data, String previousHash, String hash,
+    public Block( LocalDateTime timestamp, List< Transaction > data, String previousHash, String hash,
                   String nonce ) {
-        this.index = index;
         this.timestamp = timestamp;
         this.data = data;
         this.previousHash = previousHash;
@@ -63,7 +62,8 @@ public class Block {
         }
         String toHash = extractValuesToHash();
         byte[] hash = digest.digest( toHash.getBytes( StandardCharsets.UTF_8 ) );
-        return new String( hash, StandardCharsets.UTF_8 );
+        return Hex.encodeHexString( hash );
+        //new String( hash, StandardCharsets.UTF_8 );
     }
 
     private String extractValuesToHash() {
