@@ -1,6 +1,7 @@
 package put.poznan.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import put.poznan.backend.entities.Block;
 import put.poznan.backend.exception.BlockInvalid;
@@ -26,5 +27,11 @@ public class BlockchainService {
         }
 
         return blockchainRepository.save( block );
+    }
+
+    //TODO implement
+    @Scheduled(fixedDelay = 10000)
+    public void mineBlock() {
+
     }
 }

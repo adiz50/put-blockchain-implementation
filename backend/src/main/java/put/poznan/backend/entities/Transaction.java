@@ -12,12 +12,13 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "transaction")
+@ToString
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @ToString.Exclude
     private UUID id;
     private UUID sender;
     private UUID recipient;
     private Double value;
-    private Long blockIndex;
 }
