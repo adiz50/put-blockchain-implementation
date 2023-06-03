@@ -34,7 +34,6 @@ public class BlockchainService {
         return blockchainRepository.save( block );
     }
 
-    //TODO implement
     @Scheduled(fixedDelay = 10000)
     public void mineBlock() {
         Optional< Block > last = blockchainRepository.getLastBlock();
