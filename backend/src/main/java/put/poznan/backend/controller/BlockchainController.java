@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/blockcahin")
+@RequestMapping("/api/blockchain")
 @RequiredArgsConstructor
 public class BlockchainController {
 
