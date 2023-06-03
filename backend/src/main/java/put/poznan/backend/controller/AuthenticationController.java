@@ -2,16 +2,14 @@ package put.poznan.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import put.poznan.backend.dto.authentication.request.AuthenticationRequest;
 import put.poznan.backend.dto.authentication.response.AuthenticationResponse;
 import put.poznan.backend.service.AuthenticationService;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
