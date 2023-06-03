@@ -1,5 +1,6 @@
 package put.poznan.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +26,7 @@ public class Block {
     private LocalDateTime timestamp;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "block_index")
+    @JsonManagedReference
     private List< Transaction > data;
     @Nonnull
     private String previousHash;

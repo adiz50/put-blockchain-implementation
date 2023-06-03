@@ -1,5 +1,6 @@
 package put.poznan.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import put.poznan.backend.dto.transaction.request.CreateTransactionRequest;
@@ -24,6 +25,7 @@ public class Transaction {
     @ManyToOne(targetEntity = Block.class)
     @JoinColumn(name = "block_index")
     @ToString.Exclude
+    @JsonBackReference
     private Block block;
 
     @Builder
