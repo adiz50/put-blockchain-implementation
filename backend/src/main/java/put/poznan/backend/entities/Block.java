@@ -6,7 +6,6 @@ import lombok.*;
 import put.poznan.backend.utils.BinaryUtils;
 import put.poznan.backend.utils.HashingUtils;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,8 +60,7 @@ public class Block {
         if ( ! this.hash.equals( this.calculateHashInner() ) ) return false;
         if ( ! this.previousHash.equals( prev.getHash() ) ) return false;
         if ( ! HashingUtils.isEqual( hash, extractValuesToHash() ) ) return false;
-        if ( BinaryUtils.countLeadingZeros( hash ) < difficulty ) return false;
-        return true;
+        return BinaryUtils.countLeadingZeros( hash ) >= difficulty;
     }
 
     /**
@@ -71,7 +69,6 @@ public class Block {
     public boolean isValid( int difficulty ) {
         if ( ! this.hash.equals( this.calculateHashInner() ) ) return false;
         if ( ! HashingUtils.isEqual( hash, extractValuesToHash() ) ) return false;
-        if ( BinaryUtils.countLeadingZeros( hash ) < difficulty ) return false;
-        return true;
+        return BinaryUtils.countLeadingZeros( hash ) >= difficulty;
     }
 }

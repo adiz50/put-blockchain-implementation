@@ -61,7 +61,7 @@ class BlockchainServiceTest {
                 .build();
         transactionService.addTransaction( req );
         Optional< Block > block = blockchainRepository.getLastBlock();
-        Long startSec = System.currentTimeMillis() / 1000;
+        long startSec = System.currentTimeMillis() / 1000;
         while ( System.currentTimeMillis() / 1000 - startSec < 60 ) {
             block = blockchainRepository.getLastBlock();
             if ( block.isPresent() ) break;

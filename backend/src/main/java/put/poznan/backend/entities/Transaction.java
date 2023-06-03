@@ -1,10 +1,7 @@
 package put.poznan.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import put.poznan.backend.dto.transaction.request.CreateTransactionRequest;
 
 import java.util.UUID;
@@ -43,7 +40,6 @@ public class Transaction {
     }
 
     public boolean isValid() {
-        if ( value <= 0 ) return false;
-        return true;
+        return value > 0;
     }
 }

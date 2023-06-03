@@ -1,5 +1,6 @@
 package put.poznan.backend.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -12,7 +13,7 @@ public class SignatureUtils {
 
         KeyPair keyPair = getKeyPair();
 
-        byte[] data = "test".getBytes( "UTF8" );
+        byte[] data = "test".getBytes( StandardCharsets.UTF_8 );
 
         Signature sig = Signature.getInstance( "SHA1WithRSA" );
         sig.initSign( keyPair.getPrivate() );

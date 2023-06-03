@@ -122,12 +122,6 @@ public class BlockTest {
                         .value( 15.50 )
                         .build()
         );
-        Block block2 = Block.builder()
-                .data( transactions )
-                .nonce( "1" )
-                .timestamp( LocalDateTime.now() )
-                .previousHash( block1.getHash() )
-                .build();
         transactionRepository.save( Transaction.builder()
                 .sender( users.get( 0 ).getId() )
                 .recipient( users.get( 1 ).getId() )
@@ -160,12 +154,6 @@ public class BlockTest {
                         .value( 15.50 )
                         .build()
         );
-        Block block2 = Block.builder()
-                .data( transactions )
-                .nonce( "1" )
-                .timestamp( LocalDateTime.now() )
-                .previousHash( block1.getHash() )
-                .build();
         assertEquals( 0, transactionRepository.getHighestValueTransactions().size() );
     }
 

@@ -8,8 +8,6 @@ import put.poznan.backend.entities.Transaction;
 import put.poznan.backend.exception.InvalidTransaction;
 import put.poznan.backend.repository.TransactionRepository;
 
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 public class TransactionService {

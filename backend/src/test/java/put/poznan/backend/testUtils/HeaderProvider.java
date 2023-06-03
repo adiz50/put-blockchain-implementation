@@ -29,7 +29,6 @@ public class HeaderProvider {
     }
 
     public HttpHeaders getUserHeader( User user ) {
-        String plainPass = user.getPassword();
         if ( userRepository.findByUsername( user.getUsername() ).isEmpty() ) {
             User requestUser = User.builder()
                     .username( user.getUsername() )

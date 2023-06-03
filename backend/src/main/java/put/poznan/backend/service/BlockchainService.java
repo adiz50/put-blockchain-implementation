@@ -13,7 +13,6 @@ import put.poznan.backend.repository.TransactionRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +31,6 @@ public class BlockchainService {
         //For first block
         if ( prevBlock.isEmpty() && ! block.isValid( difficulty ) )
             throw new BlockInvalid( "Block is invalid" );
-        //block.getData().forEach( t -> transactionRepository.deleteById( t.getId() ) );
-        //block.getData().forEach( t -> t.setId( null ) );
         return blockchainRepository.save( block );
     }
 
