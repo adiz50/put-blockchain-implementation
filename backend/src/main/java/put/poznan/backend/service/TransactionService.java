@@ -1,6 +1,7 @@
 package put.poznan.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Service;
 import put.poznan.backend.dto.transaction.request.CreateTransactionRequest;
 import put.poznan.backend.dto.transaction.response.CreateTransactionResponse;
@@ -10,6 +11,7 @@ import put.poznan.backend.exception.AccessDenied;
 import put.poznan.backend.exception.InvalidTransaction;
 import put.poznan.backend.repository.TransactionRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,4 +30,7 @@ public class TransactionService {
         return new CreateTransactionResponse( transaction );
     }
 
+    public List< Transaction > getTransactions() {
+        return transactionRepository.getWaitingTransactions();
+    }
 }

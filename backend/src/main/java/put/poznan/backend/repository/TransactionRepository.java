@@ -15,4 +15,7 @@ public interface TransactionRepository extends JpaRepository< Transaction, UUID 
             "block_index is null) limit 1",
             nativeQuery = true)
     List< Transaction > getHighestValueTransactions();
+
+    @Query(value = "select * from transaction where block_index is null", nativeQuery = true)
+    List< Transaction > getWaitingTransactions();
 }
