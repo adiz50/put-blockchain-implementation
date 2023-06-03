@@ -54,4 +54,8 @@ public class BlockchainService {
         }
         addBlock( newBlock );
     }
+
+    public List< Block > getBlockchain() {
+        return blockchainRepository.findAll();
+    }
 }
