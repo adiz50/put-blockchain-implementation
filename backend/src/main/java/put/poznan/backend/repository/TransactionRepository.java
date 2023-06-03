@@ -6,12 +6,13 @@ import org.springframework.stereotype.Repository;
 import put.poznan.backend.entities.Transaction;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface TransactionRepository extends JpaRepository< Transaction, UUID > {
 
-    @Query(value = "select t from Transaction t where t.value = max(t.value)")
+    @Query(value = "select * from transaction where value = (select max(c.value) from transaction as c where " +
+            "block_index is null) limit 1",
+            nativeQuery = true)
     List< Transaction > getHighestValueTransactions();
 }

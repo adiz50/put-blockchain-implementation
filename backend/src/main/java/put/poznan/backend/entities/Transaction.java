@@ -24,9 +24,9 @@ public class Transaction {
     private UUID sender;
     private UUID recipient;
     private Double value;
-    @ManyToOne(targetEntity = Block.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Block.class)
     @JoinColumn(name = "block_index")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ToString.Exclude
     private Block block;
 
     @Builder

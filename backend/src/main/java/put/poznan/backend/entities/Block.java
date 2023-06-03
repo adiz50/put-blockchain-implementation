@@ -20,11 +20,12 @@ import java.util.List;
 public class Block {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long index;
     @Nonnull
     private LocalDateTime timestamp;
-    @OneToMany(targetEntity = Transaction.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "block_index")
     private List< Transaction > data;
     @Nonnull
     private String previousHash;
@@ -41,10 +42,14 @@ public class Block {
         this.previousHash = previousHash;
         this.hash = hash;
         this.nonce = nonce;
-        this.hash = calculateHash();
+        calculateHash();
     }
 
-    private String calculateHash() {
+    public void calculateHash() {
+        this.hash = HashingUtils.hash( extractValuesToHash() );
+    }
+
+    private String calculateHashInner() {
         return HashingUtils.hash( extractValuesToHash() );
     }
 
@@ -52,8 +57,8 @@ public class Block {
         return index + timestamp.toString() + data.toString() + previousHash + nonce;
     }
 
-    public boolean isValid( Block prev, int difficulty ) throws NoSuchAlgorithmException {
-        if ( ! this.hash.equals( this.calculateHash() ) ) return false;
+    public boolean isValid( Block prev, int difficulty ) {
+        if ( ! this.hash.equals( this.calculateHashInner() ) ) return false;
         if ( ! this.previousHash.equals( prev.getHash() ) ) return false;
         if ( ! HashingUtils.isEqual( hash, extractValuesToHash() ) ) return false;
         if ( BinaryUtils.countLeadingZeros( hash ) < difficulty ) return false;
@@ -63,8 +68,8 @@ public class Block {
     /**
      * Only used for first block in chain
      */
-    public boolean isValid( int difficulty ) throws NoSuchAlgorithmException {
-        if ( ! this.hash.equals( this.calculateHash() ) ) return false;
+    public boolean isValid( int difficulty ) {
+        if ( ! this.hash.equals( this.calculateHashInner() ) ) return false;
         if ( ! HashingUtils.isEqual( hash, extractValuesToHash() ) ) return false;
         if ( BinaryUtils.countLeadingZeros( hash ) < difficulty ) return false;
         return true;

@@ -7,33 +7,36 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import put.poznan.backend.TestContainersInitializer;
+import put.poznan.backend.repository.TransactionRepository;
 import put.poznan.backend.repository.UserRepository;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = TestContainersInitializer.class)
 public class BlockTest {
 
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
     private final PasswordEncoder encoder;
     private final List< User > users = new ArrayList<>();
 
     @Autowired
-    public BlockTest( UserRepository userRepository, PasswordEncoder encoder ) {
+    public BlockTest( UserRepository userRepository, TransactionRepository transactionRepository,
+                      PasswordEncoder encoder ) {
         this.userRepository = userRepository;
+        this.transactionRepository = transactionRepository;
         this.encoder = encoder;
     }
 
     @BeforeEach
     public void setup() {
         userRepository.deleteAll();
+        transactionRepository.deleteAll();
         for ( int i = 0 ; i < 2 ; i++ ) {
             User user = User.builder().username( "user" + i ).password( encoder.encode( "test" + i ) ).build();
             User temp = userRepository.save( user );
@@ -44,7 +47,7 @@ public class BlockTest {
     }
 
     @Test
-    public void isValid_correctFirstBlock_ignoreDifficulty() throws NoSuchAlgorithmException {
+    public void isValid_correctFirstBlock_ignoreDifficulty() {
         List< Transaction > transactions = new ArrayList<>();
         transactions.add(
                 Transaction.builder()
@@ -63,7 +66,7 @@ public class BlockTest {
     }
 
     @Test
-    public void isValid_correctNextBlock_ignoreDifficulty() throws NoSuchAlgorithmException {
+    public void isValid_correctNextBlock_ignoreDifficulty() {
         List< Transaction > transactions = new ArrayList<>();
         transactions.add(
                 Transaction.builder()
@@ -96,7 +99,78 @@ public class BlockTest {
     }
 
     @Test
-    public void isValid_firstBlockTooLowDifficulty() throws NoSuchAlgorithmException {
+    public void shouldNotReturnTransactionInBlock() {
+        List< Transaction > transactions = new ArrayList<>();
+        transactions.add(
+                Transaction.builder()
+                        .sender( users.get( 0 ).getId() )
+                        .recipient( users.get( 1 ).getId() )
+                        .value( 12.50 )
+                        .build()
+        );
+        Block block1 = Block.builder()
+                .data( transactions )
+                .nonce( "1" )
+                .timestamp( LocalDateTime.now() )
+                .previousHash( "0" )
+                .build();
+        transactions.clear();
+        transactions.add(
+                Transaction.builder()
+                        .sender( users.get( 0 ).getId() )
+                        .recipient( users.get( 1 ).getId() )
+                        .value( 15.50 )
+                        .build()
+        );
+        Block block2 = Block.builder()
+                .data( transactions )
+                .nonce( "1" )
+                .timestamp( LocalDateTime.now() )
+                .previousHash( block1.getHash() )
+                .build();
+        transactionRepository.save( Transaction.builder()
+                .sender( users.get( 0 ).getId() )
+                .recipient( users.get( 1 ).getId() )
+                .value( 16.50 )
+                .build() );
+        assertEquals( 1, transactionRepository.getHighestValueTransactions().size() );
+    }
+
+    @Test
+    public void shouldNotReturnAnyTransaction() {
+        List< Transaction > transactions = new ArrayList<>();
+        transactions.add(
+                Transaction.builder()
+                        .sender( users.get( 0 ).getId() )
+                        .recipient( users.get( 1 ).getId() )
+                        .value( 12.50 )
+                        .build()
+        );
+        Block block1 = Block.builder()
+                .data( transactions )
+                .nonce( "1" )
+                .timestamp( LocalDateTime.now() )
+                .previousHash( "0" )
+                .build();
+        transactions.clear();
+        transactions.add(
+                Transaction.builder()
+                        .sender( users.get( 0 ).getId() )
+                        .recipient( users.get( 1 ).getId() )
+                        .value( 15.50 )
+                        .build()
+        );
+        Block block2 = Block.builder()
+                .data( transactions )
+                .nonce( "1" )
+                .timestamp( LocalDateTime.now() )
+                .previousHash( block1.getHash() )
+                .build();
+        assertEquals( 0, transactionRepository.getHighestValueTransactions().size() );
+    }
+
+    @Test
+    public void isValid_firstBlockTooLowDifficulty() {
         List< Transaction > transactions = new ArrayList<>();
         transactions.add(
                 Transaction.builder()
@@ -115,7 +189,7 @@ public class BlockTest {
     }
 
     @Test
-    public void isValid_nextBlockTooLowDifficulty() throws NoSuchAlgorithmException {
+    public void isValid_nextBlockTooLowDifficulty() {
         List< Transaction > transactions = new ArrayList<>();
         transactions.add(
                 Transaction.builder()
@@ -148,7 +222,7 @@ public class BlockTest {
     }
 
     @Test
-    public void isValid_nextBlockWrongPrevHash() throws NoSuchAlgorithmException {
+    public void isValid_nextBlockWrongPrevHash() {
         List< Transaction > transactions = new ArrayList<>();
         transactions.add(
                 Transaction.builder()
@@ -181,7 +255,7 @@ public class BlockTest {
     }
 
     @Test
-    public void isValid_nextBlockWrongHash() throws NoSuchAlgorithmException {
+    public void isValid_nextBlockWrongHash() {
         List< Transaction > transactions = new ArrayList<>();
         transactions.add(
                 Transaction.builder()
