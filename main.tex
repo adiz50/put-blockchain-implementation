@@ -1,0 +1,159 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 4.0 (March 21, 2022)
+%
+% This template originates from:
+% https://www.LaTeXTemplates.com
+%
+% Authors:
+% Vel (vel@latextemplates.com)
+% Linux and Unix Users Group at Virginia Tech Wiki
+%
+% License:
+% CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[
+	letterpaper, % Paper size, specify a4paper (A4) or letterpaper (US letter)
+	10pt, % Default font size, specify 10pt, 11pt or 12pt
+]{CSUniSchoolLabReport}
+
+\addbibresource{sample.bib} % Bibliography file (located in the same folder as the template)
+
+%----------------------------------------------------------------------------------------
+%	REPORT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{\textbf{Blockchain implementation report}} % Report title
+
+\author{Mieszko Gąska 144432 \\ Adrian Głogowski 144232} % Author name(s), add additional authors like: '\& James \textsc{Smith}'
+
+\date{\today} % Date of the report
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Insert the title, author and date using the information specified above
+\newpage
+
+\tableofcontents
+\newpage
+%----------------------------------------------------------------------------------------
+%	OBJECTIVE
+%----------------------------------------------------------------------------------------
+\section{Objective}
+The objective of this project is to implement a basic blockchain structure that can be used to store and verify transactions. The blockchain should include the necessary components such as blocks, transactions, and cryptographic mechanisms to ensure data integrity and security.
+
+ 
+%----------------------------------------------------------------------------------------
+%	USED TECHNOLOGIES
+%----------------------------------------------------------------------------------------
+\section{Used technologies}
+
+\begin{itemize}
+    \item PostgreSQL - database
+	\item Java (Spring) - server
+    \item React - user interface
+\end{itemize}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/workflow.png}
+    \caption{Project communication workflow}
+\end{figure}
+
+%----------------------------------------------------------------------------------------
+%	DATABASE 
+%----------------------------------------------------------------------------------------
+\newpage
+\section{Database}
+In this section, we present key actors/objects in our project and their properties, whose purpose will be described in more detail later in the report. 
+
+\subsection{Users}
+\begin{itemize}
+    \item \textbf{ID}
+	\item \textbf{password}
+    \item \textbf{username}
+\end{itemize}
+\\~\\
+ID of user distinguishes him from others, we store this information in UUID type which ensure value to be unique and written as a sequence of lower-case hexadecimal digits. Password is secure stored as hash value, for what we used \textbf{PasswordEncoder} method from Spring framework.
+
+\subsection{Block}
+\label{subsec:blockdesc}
+\begin{itemize}
+    \item \textbf{index}
+    \item \textbf{hash}
+	\item \textbf{nonce}
+    \item \textbf{previous hash}
+    \item \textbf{timestamp}
+\end{itemize}
+\\~\\
+Index and hash are like ID, where index is used to enumerate each block, which it is used later to distinguish block in transaction, hash is like a true pointer to this block in blockchain. Nonce property is a number which counts how many attempts block needed to find the correct value hash value, in our project we take that hash value have to begin with 16 zeroes, while it is calculating by method:
+\begin{equation}
+    index + timestamp + data + previousHash + nonce
+\end{equation}
+Where data is a list of transactions.
+\\ Previous hash is a hash value of the previous block, if there is no previous block in the transaction, then we set this value to '0'.
+\\ And the last - timestamp is a time when the block starts to mining and transaction is already added to it.
+
+\newpage
+\subsection{Transaction}
+\begin{itemize}
+    \item \textbf{ID}
+    \item \textbf{recipient}
+	\item \textbf{sender}
+    \item \textbf{value}
+    \item \textbf{block index}
+\end{itemize}
+\\~\\
+ID distinguishes transaction. Recipient is UUID of the person who was commissioned to execute this transaction and who will get rewarded by the amount of value property. 
+\\ Sender is UUID of the person who submitted the transaction.
+\\ Block index is the identity of the block that executes the transaction.
+
+%----------------------------------------------------------------------------------------
+%	User authorization
+%----------------------------------------------------------------------------------------
+\section{User authorization}
+
+Our application have login/registration functionality, by that only authorized users can join to the blockchain. Process of authorization can be described in a several steps:
+\\~\\
+\begin{enumerate}
+\item User creates account using registration panel 
+\item After successful registration user login to the application, during that server checks his login credentials and if everything is correct, returns \textbf{Json Web Token (JWT)}. JWT is signed by a secret value contained in the server configuration settings. For better security we also set the expiration time of the JWT token.
+\end{enumerate}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/jwt_secret.png}
+    \caption{JWT configuration}
+\end{figure}
+
+Whenever the user wants to access a protected route or resource, the user agent should send the JWT, typically in the Authorization header using the Bearer schema, which should look like the following:
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/tokenHeader.png}
+    \caption{Token in header}
+\end{figure}
+
+%----------------------------------------------------------------------------------------
+%	BLOCKCHAIN IMPLEMENTATION LOGIC
+%----------------------------------------------------------------------------------------
+\newpage
+\section{Blockchain implementation logic}
+During block mining, at the beginning, we are searching for the transaction with the highest value. In case there is no transaction at all, Block is mining every 10 second, searching for a transaction that can be picked up. When we choose the transaction, we set up the timestamp, data and previous hash properties of block, which we already described more specific in subsection \hyperref[subsec:blockdesc]{\textbf{Block}} of Database section. Next we go to the consensus mechanism.
+
+\subsection{consensus mechanism}
+For our implementation, we chose \textbf{proof-of-work} mechanism, where the difficulty is to start hash value of each block with 16 zeroes. We also described it in the \hyperref[subsec:blockdesc]{\textbf{Block}} subsection. after obtaining the right value hash value, we save it and the number of iteration which was needed to calculate it (nonce property).
+And that prepared block is joined to the blockchain.
+
+Of course, we also added validation methods for creatable object i.e. blocks and transactions which occurs before adding new block or transaction. For example, that blocks hashes for sure are unique and can't be found the same in the blockchain.
+
+\end{document}
