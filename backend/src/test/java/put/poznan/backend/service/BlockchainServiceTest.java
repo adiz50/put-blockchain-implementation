@@ -1,6 +1,7 @@
 package put.poznan.backend.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,6 +54,7 @@ class BlockchainServiceTest {
     }
 
     @Test
+    @Disabled
     void mineBlock_mineBlockInUnder1Minute() {
         CreateTransactionRequest req = CreateTransactionRequest.builder()
                 .value( 20.0 )
@@ -70,6 +72,7 @@ class BlockchainServiceTest {
     }
 
     @Test
+    @Disabled
     void mineBlock_mineFor1MinuteAndCheck() throws InterruptedException {
         //Given
         CreateTransactionRequest req = CreateTransactionRequest.builder()

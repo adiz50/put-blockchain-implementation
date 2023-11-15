@@ -1,0 +1,47 @@
+version: "3.0"
+services:
+  database:
+    environment:
+      - POSTGRES_USER=${DATABASE_LOGIN}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    container_name: database
+    volumes:
+      - ${VOLUME_LOCATION}
+    restart:
+      unless-stopped
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    expose:
+      - "5436"
+    networks:
+      - exapp
+  backend:
+    container_name: backend
+    ports:
+      - "${BACKEND_PORT}"
+    depends_on:
+      - "database"
+    networks:
+      - exapp
+    build:
+      context: .
+      dockerfile: ${BACKEND_DOCKERFILE}
+  frontend:
+    container_name: frontend
+    ports:
+      - "${FRONTEND_PORT}"
+      - "${FRONTEND_PORT2}"
+    networks:
+      - exapp
+    build:
+      context: .
+      dockerfile: ${FRONT_DOCKERFILE}
+volumes:
+  db:
+    driver: local
+networks:
+  exapp:
+    external:
+      name: exapp
