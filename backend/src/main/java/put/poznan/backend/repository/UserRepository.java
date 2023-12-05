@@ -9,11 +9,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository< User, UUID > {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query(value = "select u from User u where u.username = ?1")
-    Optional< User > findByUsername( String username );
+    Optional<User> findByUsername( String username );
 
     @Query(value = "select count(u) > 0 FROM User u WHERE u.username = ?1")
     boolean existsByUsername( String username );
+
+    @Query(value = "select count(u) > 0 FROM User u WHERE u.email = ?1")
+    boolean existsByEmail( String email );
+
+    @Query(value = "select u from User u where u.email = ?1")
+    Optional<User> findByEmail( String email );
 }

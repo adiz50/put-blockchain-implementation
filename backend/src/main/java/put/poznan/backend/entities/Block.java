@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "block")
+@Table(name = "block", schema = "public")
 @ToString
 public class Block {
 
@@ -27,7 +27,7 @@ public class Block {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "block_index")
     @JsonManagedReference
-    private List< Transaction > data;
+    private List<Transaction> data;
     @Nonnull
     private String previousHash;
     @Nonnull
@@ -36,7 +36,7 @@ public class Block {
     private String hash;
 
     @Builder
-    public Block( LocalDateTime timestamp, List< Transaction > data, String previousHash, String hash,
+    public Block( LocalDateTime timestamp, List<Transaction> data, String previousHash, String hash,
                   String nonce ) {
         this.timestamp = timestamp;
         this.data = data;

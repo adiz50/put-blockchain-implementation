@@ -10,7 +10,7 @@ services:
       - ${VOLUME_LOCATION}
     restart:
       unless-stopped
-    image: postgres:latest
+    image: postgres:15
     ports:
       - "5432:5432"
     expose:

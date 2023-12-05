@@ -20,12 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping(path = "/all")
-    public ResponseEntity< List< AllUsersResponse > > getAllUsers() {
+    public ResponseEntity<List<AllUsersResponse>> getAllUsers() {
         return ResponseEntity.ok( userService.getAllUsers() );
     }
 
     @GetMapping(path = "/me")
-    public ResponseEntity< AllUsersResponse > whoIam() {
+    public ResponseEntity<AllUsersResponse> whoIam() {
         return ResponseEntity.ok( userService.whoAmI() );
     }
 }
