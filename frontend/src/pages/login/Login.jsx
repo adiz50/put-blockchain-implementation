@@ -31,7 +31,7 @@ const Login = ({snackbar}) => {
                         <Typography.Title level={3}>Login</Typography.Title>
                         <Space size={12} direction="vertical" style={{width: "100%"}}>
                             <Input
-                                placeholder="Username"
+                                placeholder="Placeholder"
                                 value={userData.username}
                                 onChange={(e) =>
                                     setUserData({...userData, username: e.target.value})

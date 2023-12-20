@@ -1,5 +1,6 @@
 import {Route, Routes} from "react-router-dom";
 import "./App.css";
+import HomePage from "./pages/homepage/HomePage";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Dashboard from "./pages/dashboard/dashboard";
@@ -29,10 +30,11 @@ function App() {
                         isUserLoggedIn ? (
                             <Dashboard snackbar={snackbar}/>
                         ) : (
-                            <Login snackbar={snackbar}/>
+                            <HomePage snackbar={snackbar}/>
                         )
                     }
                 />
+                <Route path="/homepage" element={<HomePage snackbar={snackbar}/>}/>
                 <Route path="/login" element={<Login snackbar={snackbar}/>}/>
                 <Route path="/register" element={<Register snackbar={snackbar}/>}/>
                 <Route path="/forgotten" element={<ForgotPassword snackbar={snackbar}/>}/>

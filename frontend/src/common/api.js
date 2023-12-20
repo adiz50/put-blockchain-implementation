@@ -81,6 +81,16 @@ export const forgotPassword = async (email) => {
     }
 };
 
+export const getPosts = async () => {
+    try {
+        const response = await axios.get(`${URL}/api/posts`, {
+        });
+        return response.data;
+    } catch (e) {
+        throw new Error(e?.response?.data);
+    }
+};
+
 export const whoAmI = async (token) => {
     try {
         const response = await axios.get(`${URL}/api/users/me`, {
