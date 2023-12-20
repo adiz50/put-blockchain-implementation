@@ -30,6 +30,7 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_index")
     private List<Comment> comments;
+    private boolean isActive = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

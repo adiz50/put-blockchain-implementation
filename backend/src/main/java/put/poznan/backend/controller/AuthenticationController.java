@@ -8,6 +8,8 @@ import put.poznan.backend.dto.authentication.request.PasswordResetRequest;
 import put.poznan.backend.dto.authentication.response.AuthenticationResponse;
 import put.poznan.backend.service.AuthenticationService;
 
+import java.util.UUID;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/auth")
@@ -17,13 +19,19 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register( @RequestBody AuthenticationRequest req ) {
-        return ResponseEntity.ok( service.register( req ) );
+    public ResponseEntity<Object> register( @RequestBody AuthenticationRequest req ) {
+        service.register( req );
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate( @RequestBody AuthenticationRequest req ) {
         return ResponseEntity.ok( service.authenticate( req ) );
+    }
+
+    @PostMapping("/activate")
+    public ResponseEntity<AuthenticationResponse> activateAccount( @RequestParam UUID code ) {
+        return ResponseEntity.ok( service.activateAccount( code ) );
     }
 
     @PostMapping(path = "/forgotten")
@@ -37,5 +45,3 @@ public class AuthenticationController {
         return ResponseEntity.ok( service.resetPassword( req ) );
     }
 }
-//eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNzAzMDk4MTY4LCJleHAiOjE3MDM5NjIxNjh9
-// ._zs3q2yzQyP0ERylnA5c_7hRv2rm_qZZXwaSWA70tSk

@@ -42,12 +42,19 @@ public class AuthenticationService {
     private String forgottenPassSubject;
     @Value("${mail.forgotten.redirect}")
     private String forgottenPassRedirect;
+    @Value("${mail.verify.body}")
+    private String mailVerificationBody;
+    @Value("${mail.verify.subject}")
+    private String mailVerificationSubject;
+    @Value("${mail.verify.redirect}")
+    private String mailVerificationRedirect;
 
-    public AuthenticationResponse register( AuthenticationRequest req ) {
+    public void register( AuthenticationRequest req ) {
         var user = User.builder()
                 .username( req.getUsername() )
                 .password( passwordEncoder.encode( req.getPassword() ) )
                 .email( req.getEmail() )
+                .isActive( false )
                 .build();
         if ( userRepository.existsByUsername( req.getUsername() ) ) {
             throw new UsernameTakenException( "Username taken" );
@@ -57,7 +64,34 @@ public class AuthenticationService {
         }
         if ( ! isPasswordValid( req.getPassword() ) )
             throw new RuntimeException( "Password does not fulfill the requirements" );
-        userRepository.save( user );
+        user = userRepository.save( user );
+        UUID code = UUID.randomUUID();
+        Verify verify = Verify.builder()
+                .id( code )
+                .actionType( ActionType.VERIFY_EMAIL )
+                .user( user )
+                .build();
+        Mail mail = Mail.builder()
+                .body( mailVerificationBody + "\n" + mailVerificationRedirect + code )
+                .subject( mailVerificationSubject )
+                .email( req.getEmail() )
+                .build();
+        verifyRepository.save( verify );
+        mailService.addMail( mail );
+        /*var jwtToken = jwtService.generateToken( user );
+        return AuthenticationResponse.builder()
+                .token( jwtToken )
+                .build();*/
+    }
+
+    public AuthenticationResponse activateAccount( UUID code ) {
+        Optional<Verify> verify = verifyRepository.findById( code );
+        if ( verify.isEmpty() || ! verify.get().getActionType().equals( ActionType.VERIFY_EMAIL ) )
+            throw new AccessDenied( "Invalid code" );
+        User user = verify.get().getUser();
+        user.setActive( true );
+        user = userRepository.save( user );
+        verifyRepository.delete( verify.get() );
         var jwtToken = jwtService.generateToken( user );
         return AuthenticationResponse.builder()
                 .token( jwtToken )
@@ -70,6 +104,7 @@ public class AuthenticationService {
         );
         var user = userRepository.findByUsername( req.getUsername() )
                 .orElseThrow( () -> new UsernameNotFoundException( "User not found" ) );
+        if ( ! user.isActive() ) throw new RuntimeException( "Activate your account first" );
         var jwtToken = jwtService.generateToken( user );
         return AuthenticationResponse.builder()
                 .token( jwtToken )
@@ -98,11 +133,12 @@ public class AuthenticationService {
 
     @Transactional(rollbackOn = Throwable.class)
     public AuthenticationResponse resetPassword( PasswordResetRequest req ) {
-        System.out.println( req );
         Optional<Verify> verify = verifyRepository.findById( req.getCode() );
-        if ( verify.isEmpty() ) throw new AccessDenied( "Invalid code" );
+        if ( verify.isEmpty() || ! verify.get().getActionType().equals( ActionType.FORGOTTEN_PASSWORD ) )
+            throw new AccessDenied( "Invalid code" );
         User user = verify.get().getUser();
         user.setPassword( BCrypt.hashpw( req.getPassword(), BCrypt.gensalt() ) );
+        user.setActive( true );
         user = userRepository.save( user );
         verifyRepository.delete( verify.get() );
         var jwtToken = jwtService.generateToken( user );
