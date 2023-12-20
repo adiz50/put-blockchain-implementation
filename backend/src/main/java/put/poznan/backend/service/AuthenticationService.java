@@ -55,6 +55,8 @@ public class AuthenticationService {
         if ( ! EmailValidator.getInstance().isValid( req.getEmail() ) || userRepository.existsByEmail( req.getEmail() ) ) {
             throw new InvalidEmail( "Email is taken or invalid" );
         }
+        if ( ! isPasswordValid( req.getPassword() ) )
+            throw new RuntimeException( "Password does not fulfill the requirements" );
         userRepository.save( user );
         var jwtToken = jwtService.generateToken( user );
         return AuthenticationResponse.builder()
@@ -107,5 +109,26 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token( jwtToken )
                 .build();
+    }
+
+    /**
+     * Checks wheter password is valid. <br>
+     * Password must contain: <br>
+     * - at least 6 characters <br>
+     * - at least one digit <br>
+     * - at least one special symbol <br>
+     */
+    private boolean isPasswordValid( String password ) {
+        return password.length() >= 6 && password.matches( ".*\\d.*" )
+                && containsSpecialCharacter( password );
+    }
+
+    private boolean containsSpecialCharacter( String password ) {
+        String specialChars = " `!@#$%^&*()_+-=\\]{};':\"|,.<>?~";
+        for ( char a : specialChars.toCharArray() ) {
+            if ( password.contains( String.valueOf( a ) ) )
+                return true;
+        }
+        return false;
     }
 }

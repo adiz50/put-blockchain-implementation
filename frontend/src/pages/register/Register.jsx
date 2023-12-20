@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {registerUser} from "../../common/api";
 import AuthenticationService from "../../service/AuthenticationService";
 import {Button, Card, Input, Layout, Space, Typography} from "antd";
@@ -10,6 +10,9 @@ const Register = ({snackbar}) => {
         passwordrpt: "",
         email: "",
     });
+    const [hasNumber, setHasNumber] = useState(false);
+    const [hasSpecChar, setHasSpecChar] = useState(false);
+    const [validLength, setValidLength] = useState(false);
 
     const handleRegister = () => {
         registerUser(userData.username, userData.password, userData.email)
@@ -23,6 +26,14 @@ const Register = ({snackbar}) => {
                 snackbar(error.message, "error");
             });
     };
+
+    useEffect(() => {
+        setValidLength(userData.password.length >= 6);
+        setHasNumber(/\d/.test(userData.password));
+        setHasSpecChar(
+            /[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/.test(userData.password)
+        );
+    }, [userData]);
 
     return (
         <>
@@ -54,6 +65,9 @@ const Register = ({snackbar}) => {
                                 status={
                                     userData.password &&
                                     userData.passwordrpt &&
+                                    !hasSpecChar &&
+                                    !validLength &&
+                                    !hasNumber &&
                                     userData.password !== userData.passwordrpt
                                         ? "error"
                                         : ""
@@ -83,6 +97,9 @@ const Register = ({snackbar}) => {
                                     !userData.username ||
                                     !userData.password ||
                                     !userData.passwordrpt ||
+                                    !hasSpecChar ||
+                                    !validLength ||
+                                    !hasNumber ||
                                     userData.password !== userData.passwordrpt
                                 }
                             >

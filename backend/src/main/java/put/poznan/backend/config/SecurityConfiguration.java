@@ -25,7 +25,8 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers( "/api/auth/**" )
+                .requestMatchers( "/api/auth/**",
+                        "/api/posts" )
                 .permitAll()
                 .requestMatchers( HttpMethod.OPTIONS, "/**" )
                 .permitAll()
