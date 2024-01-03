@@ -1,0 +1,9 @@
+.comment-add {
+    background-color: rgba(32, 32, 32, 0.3);
+    border-radius: 0px 0px 30px 30px;
+    width: 100%;
+}
+
+.comment-container {
+    background-color: rgb(233, 233, 233);
+}

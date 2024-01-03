@@ -30,7 +30,7 @@ function App() {
                         isUserLoggedIn ? (
                             <Dashboard snackbar={snackbar}/>
                         ) : (
-                            <HomePage snackbar={snackbar}/>
+                            <Login snackbar={snackbar}/>
                         )
                     }
                 />

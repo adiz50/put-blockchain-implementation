@@ -62,6 +62,14 @@ const Login = ({snackbar}) => {
                             >
                                 Register
                             </Button>
+                            <Button
+                                onClick={() => {
+                                    window.location.href = "/homepage";
+                                }}
+                                style={{width: "100%"}}
+                            >
+                                Home page
+                            </Button>
                         </Space>
                     </Space>
                 </Card>

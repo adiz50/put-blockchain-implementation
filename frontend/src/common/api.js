@@ -117,6 +117,26 @@ export const getUsers = async () => {
     }
 };
 
+export const sendComment = async (post, text) => {
+    try {
+        const response = await axios.post(
+            `${URL}/api/comment`,
+            {
+                postId: post.id,
+                body: text,
+            },
+            {
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (e) {
+        throw new Error(e?.response?.data);
+    }
+};
+
 export const sendTransaction = async (recipient, value) => {
     try {
         const user = JSON.parse(localStorage.getItem("user"));
