@@ -31,10 +31,7 @@ const HomePage = ({snackbar}) => {
     };
 
     const filterData = useCallback((posts) => {
-        console.log(posts);
-        console.log(newSearch);
         if (newSearch.text !== '') {
-            console.log('if')
             setFilteredPosts(posts.filter(post => 
                     post.title.toLowerCase().includes(newSearch.text.toLowerCase())
                 ));
@@ -102,7 +99,6 @@ const HomePage = ({snackbar}) => {
             }}
             >
                 <div>
-                    {console.log(filteredPosts)}
                     {filteredPosts?.map((post) => (
                         <Post key={post.id} post={post} getAllPosts={getAllPosts} />
                     ))}
