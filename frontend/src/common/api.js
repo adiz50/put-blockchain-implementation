@@ -62,6 +62,23 @@ export const resetPassword = async (password, code) => {
     }
 };
 
+export const verify = async (code) => {
+    try {
+        const response = await axios.post(
+            `${URL}/api/auth/activate?code=` + code,
+            {},
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        return response.data;
+    } catch (e) {
+        throw new Error(e?.response?.data);
+    }
+}
+
 export const forgotPassword = async (email) => {
     try {
         const response = await axios.post(
@@ -83,8 +100,7 @@ export const forgotPassword = async (email) => {
 
 export const getPosts = async () => {
     try {
-        const response = await axios.get(`${URL}/api/posts`, {
-        });
+        const response = await axios.get(`${URL}/api/posts`, {});
         return response.data;
     } catch (e) {
         throw new Error(e?.response?.data);

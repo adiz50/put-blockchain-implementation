@@ -8,6 +8,7 @@ import AuthenticationService from "./service/AuthenticationService";
 import {Layout, message} from "antd";
 import ForgotPassword from "./pages/forgotPassword/ForgotPassword";
 import ResetPassword from "./pages/forgotPassword/ResetPassword";
+import Verify from "./pages/verify/Verify";
 
 function App() {
     const isUserLoggedIn = AuthenticationService.isUserLoggedIn();
@@ -34,6 +35,7 @@ function App() {
                         )
                     }
                 />
+                <Route path="/verify" element={<Verify snackbar={snackbar}/>}/>
                 <Route path="/homepage" element={<HomePage snackbar={snackbar}/>}/>
                 <Route path="/login" element={<Login snackbar={snackbar}/>}/>
                 <Route path="/register" element={<Register snackbar={snackbar}/>}/>
