@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {login} from "../../common/api";
 import AuthenticationService from "../../service/AuthenticationService";
-import {Button, Card, Input, Layout, Space, Typography} from "antd";
+import {Button, Card, Input, Layout, Space, Typography, Modal} from "antd";
 import {Link} from "react-router-dom";
 
 const Login = ({snackbar}) => {
@@ -9,6 +9,21 @@ const Login = ({snackbar}) => {
         username: "",
         password: "",
     });
+    const [passwordInfo, setPasswordInfo] = useState({
+        open: false,
+    });
+
+    const showPasswordInfo = () => {
+        setPasswordInfo({
+            open: true,
+        });
+    };
+
+    const handleClose = () => {
+        setPasswordInfo({
+            open: false,
+        });
+    };
 
     const handleLogin = () => {
         login(userData.username, userData.password)
@@ -37,13 +52,28 @@ const Login = ({snackbar}) => {
                                     setUserData({...userData, username: e.target.value})
                                 }
                             />
-                            <Input.Password
-                                placeholder="Password"
-                                value={userData.password}
-                                onChange={(e) =>
-                                    setUserData({...userData, password: e.target.value})
-                                }
-                            />
+                            <div
+                                style={{
+                                    display: "inline-flex",
+                                }}
+                            >
+                                <Input.Password
+                                    // style={{ width: "auto"}}
+                                    placeholder="Password"
+                                    value={userData.password}
+                                    onChange={(e) =>
+                                        setUserData({...userData, password: e.target.value})
+                                    }
+                                />
+                                <Button
+                                    style={{ 
+                                        backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                    }}
+                                    onClick={showPasswordInfo}
+                                >
+                                    ?
+                                </Button>
+                            </div>
                             <Link to="/forgotten">Forgot password?</Link>
                         </Space>
                         <Space size={12} direction="vertical" style={{width: "100%"}}>
@@ -74,6 +104,27 @@ const Login = ({snackbar}) => {
                     </Space>
                 </Card>
             </Layout.Content>
+            <Modal
+                open={passwordInfo.open}
+                title="Password Requirements:"
+                centered
+                onCancel={handleClose}
+                footer={[
+                    <Button onClick={handleClose}>OK</Button>,
+                 ]}
+            >
+                <Space size={12} direction="vertical" style={{ width: "100%" }}>
+                    <Space size={2} direction="vertical" style={{ width: "100%" }}>
+                        <Typography.Text>
+                            <ul>
+                                <li>6 Characters length</li>
+                                <li>1 Digit</li>
+                                <li>1 Special Character</li>
+                            </ul>
+                        </Typography.Text>
+                    </Space>
+                </Space>
+            </Modal>
         </>
     );
 };
