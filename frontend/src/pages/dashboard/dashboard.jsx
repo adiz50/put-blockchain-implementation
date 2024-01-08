@@ -134,6 +134,14 @@ const Dashboard = ({ snackbar }) => {
             <Button
               type="link"
               onClick={() => {
+                window.location.href = "/homepage";
+              }}
+            >
+              Home page
+            </Button>
+            <Button
+              type="link"
+              onClick={() => {
                 AuthenticationService.logout();
               }}
             >
